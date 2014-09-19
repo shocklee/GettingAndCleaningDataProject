@@ -10,6 +10,10 @@
 #
 setwd("C:\\Users\\Mark\\Coursera\\GettingAndCleaningData\\Project")
 #
+# Specify any packages used
+#
+library(plyr)
+#
 # Create a data directory for the project file
 #
 if(! file.exists("data")) {
@@ -54,6 +58,7 @@ YTestFileName <- "y_test.txt"
 subjectTrainFileName <- "subject_train.txt"
 XTrainFileName <- "X_train.txt"
 YTrainFileName <- "y_train.txt"
+outputDataFileName <- "./data/classprojectoutput.txt"
 #
 # Read the contents of file containing the variable names
 #
@@ -65,14 +70,14 @@ activityLabelsFile <- read.table(paste0(unzipFileDirectory, activityLablesFileNa
 #
 # Read the contents of file containing the data located in the test directory
 #
-subjectTestFile <- read.table(paste0(testFileDirectory, subjectTestFileName), colClasses = "character")
-XTestFile <- read.table(paste0(testFileDirectory, XTestFileName), colClasses = "character")
+subjectTestFile <- read.table(paste0(testFileDirectory, subjectTestFileName), colClasses = "numeric")
+XTestFile <- read.table(paste0(testFileDirectory, XTestFileName), colClasses = "numeric")
 YTestFile <- read.table(paste0(testFileDirectory, YTestFileName), colClasses = "character")
 #
 # Read the contents of file containing the data located in the train directory
 #
-subjectTrainFile <- read.table(paste0(trainFileDirectory, subjectTrainFileName), colClasses = "character")
-XTrainFile <- read.table(paste0(trainFileDirectory, XTrainFileName), colClasses = "character")
+subjectTrainFile <- read.table(paste0(trainFileDirectory, subjectTrainFileName), colClasses = "numeric")
+XTrainFile <- read.table(paste0(trainFileDirectory, XTrainFileName), colClasses = "numeric")
 YTrainFile <- read.table(paste0(trainFileDirectory, YTrainFileName), colClasses = "character")
 #
 # 1, Merge the training and the test sets to create one data set.
@@ -95,33 +100,35 @@ totalYFile <- rbind(YTestFile, YTrainFile)
 #
 #####
 #
-# Convert the activity labels in the totalYFile to their text values using
-# the values in the activityLabelsFile
-#
-totalYFile <- merge(totalYFile, activityLabelsFile, by.x="V1", by.y="V1")
-totalYFile <- totalYFile[ -c(1) ] #Remove the activiy label code value
-#
 # Appropriately labels the data set with descriptive variable names 
 #
+colnames(activityLabelsFile) <- c("activityIdentifier", "activity")
 colnames(totalSubjectFile) <- "subjectIdentifier"
-colnames(totalXFile) <- make.names(featuresFile$V2)
-colnames(totalYFile) <- "activity"
+colnames(totalXFile) <- featuresFile$V2
+colnames(totalYFile) <- "activityIdentifier"
 #
 # Merge the data frames that have the same number of rows by column
 #
 mergeFile <- cbind(totalSubjectFile, totalYFile, totalXFile)
 #
+# Convert the activity labels in the totalYFile to their text values using
+# the values in the activityLabelsFile
+#
+mergeFile <- merge(mergeFile, activityLabelsFile, 
+                   by.x = "activityIdentifier", by.y = "activityIdentifier")
+#
 # Extract only the measurements on the mean and standard deviation for 
 # each measurement.
 #
-columnsOfInterest <- grep("activity|subjectIdentifier|\\.mean\\.|\\.std\\.", colnames(mergeFile))
+columnsOfInterest <- grep("activity|subjectIdentifier|mean|std", colnames(mergeFile))
 reducedDataFile <- mergeFile[,columnsOfInterest]
 #
-# From the data set in step 4, creates a second, independent tidy data set 
+# From the data set, creates a second, independent tidy data set 
 # with the average of each variable for each activity and each subject.
 #
-
+outputDataFile <- ddply(reducedDataFile, .(activity, subjectIdentifier), 
+                        numcolwise(mean))
 #
 # Write the tidy data set so that it can be uploaded to the project site.
 #
-write.table() using row.name=FALSE
+write.table(outputDataFile, file = outputDataFileName, row.name=FALSE)
