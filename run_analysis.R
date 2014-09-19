@@ -31,9 +31,11 @@ dataDownloaded <- date() # "Fri Sep 12 17:30:17 2014"
 #
 unzip(zipFile, exdir = "./data")
 #####
+#
 # This is the beginning of the project work.  Each step description is
 # taken directly from the project assignment.  Additonal detail will be
 # provided to supplement the simple descriptions that were downloaded.
+#
 #####
 #
 # Set the directories where the UCI HAR Data is located
@@ -93,34 +95,33 @@ totalYFile <- rbind(YTestFile, YTrainFile)
 #
 #####
 #
+# Convert the activity labels in the totalYFile to their text values using
+# the values in the activityLabelsFile
+#
+totalYFile <- merge(totalYFile, activityLabelsFile, by.x="V1", by.y="V1")
+totalYFile <- totalYFile[ -c(1) ] #Remove the activiy label code value
+#
+# Appropriately labels the data set with descriptive variable names 
+#
+colnames(totalSubjectFile) <- "subjectIdentifier"
+colnames(totalXFile) <- make.names(featuresFile$V2)
+colnames(totalYFile) <- "activity"
+#
 # Merge the data frames that have the same number of rows by column
 #
 mergeFile <- cbind(totalSubjectFile, totalYFile, totalXFile)
 #
-# Convert the activity labels in the totalYFile to their text values
-#
-#
-# Add meaningful column names to the data
-#
-#
-# Select only those columns that have the data of interest
-#
-#
-# Write out the result in the desired format
-
-#
-# 2, Extract only the measurements on the mean and standard deviation for 
+# Extract only the measurements on the mean and standard deviation for 
 # each measurement.
 #
+columnsOfInterest <- grep("activity|subjectIdentifier|\\.mean\\.|\\.std\\.", colnames(mergeFile))
+reducedDataFile <- mergeFile[,columnsOfInterest]
 #
-# 3. Use descriptive activity names to name the activities in the data set.
-#
-#
-# 4. Appropriately labels the data set with descriptive variable names. 
-#
-#
-# 5. From the data set in step 4, creates a second, independent tidy data set 
+# From the data set in step 4, creates a second, independent tidy data set 
 # with the average of each variable for each activity and each subject.
 #
+
+#
 # Write the tidy data set so that it can be uploaded to the project site.
+#
 write.table() using row.name=FALSE

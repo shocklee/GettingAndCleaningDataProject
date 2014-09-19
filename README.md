@@ -64,11 +64,38 @@ The one conventional reference relates the activity_labels.txt and the Y_train.t
 
 ## Processing Steps
 
-1. Merge the training and the test sets to create one data set.
-2. Extract only the measurements on the mean and standard deviation for each measurement. 
-3. Uses descriptive activity names to name the activities in the data set
-4. Appropriately labels the data set with descriptive variable names. 
-5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
+The order of operations from the class instructions were a bit different that the steps that I performed.  These steps (broadly) were
+
+1. Download the zip data from the specified web site and write it locally.
+2. Unzip the files and store them locally.
+3. Create references to each one of the files of interest.
+4. While this step didn't make it into the run_analysis file, check to see if
+   all of the file dimensions match.
+   + The test files should have 2947 observations.
+   + The train files should have 7352 observations.
+   + The features.txt file should have 561 entries corresponding to the 
+     561 columns in the X_train.txt or X_test.txt files.
+   + The activity_labels.txt should have 6 values and the y_train.txt or
+     y_test.txt values should have matching values between 1 - 6.
+   + The subject_train.txt and subject_test.txt should have values ranging from
+     1 - 30.
+5. Merge the correspondingg training and the test sets to create one data set.
+   + Merge the subject_train.txt and subject_test.txt
+   + Merge the X_train.txt and X_test.txt files.
+   + Merge the y_train.txt and y_test.txt files.
+6. Change the numeric activity labels in the merged y files to there 
+   corresponding values from the activity_labels.txt file.
+7. Appropriately labels the data set with descriptive variable names.  It is easy
+   to add column names to the subject and y files, not so easy to apply the names
+   from the featuresFile.
+   + Found that the make.names function will transform the names to legal 
+     column names.  
+   + Would really like to get rid of the duplicate periods and trailing periods,
+     will come back and do this if I have time.
+8. Extract only the measurements on the mean and standard deviation for each
+   measurement. 
+9. Creates a second, independent tidy data set with the average of each variable
+   for each activity and each subject.
 
 # Output
 
