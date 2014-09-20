@@ -1,7 +1,7 @@
 ---
 title: "README"
 author: "Mark Shocklee"
-date: "Thursday, September 18, 2014"
+date: "Saturday, September 20, 2014"
 output: html_document
 ---
 # Overview
@@ -64,7 +64,8 @@ The one conventional reference relates the activity_labels.txt and the Y_train.t
 
 ## Processing Steps
 
-The order of operations from the class instructions were a bit different that the steps that I performed.  These steps (broadly) were
+The order of operations from the class instructions were a bit different that the steps that I performed.  These steps are listed below and I have gone back into
+the comments within the code and made sure that the step numbers match.
 
 1. Download the zip data from the specified web site and write it locally.
 2. Unzip the files and store them locally.
@@ -79,24 +80,56 @@ The order of operations from the class instructions were a bit different that th
      y_test.txt values should have matching values between 1 - 6.
    + The subject_train.txt and subject_test.txt should have values ranging from
      1 - 30.
-5. Merge the correspondingg training and the test sets to create one data set.
+5. Merge the corresponding training and the test sets to create one data set.
    + Merge the subject_train.txt and subject_test.txt
    + Merge the X_train.txt and X_test.txt files.
    + Merge the y_train.txt and y_test.txt files.
-6. Change the numeric activity labels in the merged y files to there 
-   corresponding values from the activity_labels.txt file.
-7. Appropriately labels the data set with descriptive variable names.  It is easy
+6. Appropriately labels the data set with descriptive variable names.  It is easy
    to add column names to the subject and y files, not so easy to apply the names
    from the featuresFile.
-   + Found that the make.names function will transform the names to legal 
-     column names.  
-   + Would really like to get rid of the duplicate periods and trailing periods,
-     will come back and do this if I have time.
-8. Extract only the measurements on the mean and standard deviation for each
+7. Merge the data frames that have the same number of rows by column
+8. Change the numeric activity labels to there corresponding values from the
+   activity_labels.txt file.
+9. Extract only the measurements on the mean and standard deviation for each
    measurement. 
-9. Creates a second, independent tidy data set with the average of each variable
+10. Creates a second, independent tidy data set with the average of each variable
    for each activity and each subject.
+11. Write the tidy data set so that it can be uploaded to the project site.
 
 # Output
 
-The codebook for the output file is located in CodeBook.md.
+The output is a tidy data set with the rows grouped by activity and then by the subject that performed the activity and a column containing the mean of each variable.; this means that there will be a total of 180 rows of output (6 activities by 30 subjects) with a total of 79 averages.  The codebook for the output file is located in CodeBook.md.
+
+# Issues
+
+## Program Design Issues
+
+* I would like to look at some sample code to see how the programs are
+        typically structured.  I purposefully kept the code into a blob to
+        avoid confusing the reviewers, however it should have been broken
+        into chunks, probably:  read data, merge data, label data, and process
+        data.
+* I decided to keep the connection between the variable names provided in
+        the features file.  Based upon my reading, these are not legal names.
+        I was afraid that if I did change the column names to make them legal,
+        that would probably confuse the reviewers.
+   + Found that the make.names function will transform the names to legal 
+     column names.  
+   + If I use make.names, it introduces duplicate periods and trailing periods,
+     would need to figure out how to get rid of these.
+* I don't think there is much value in changing the result dataset variable 
+        names to clearly indicate that the output contains the mean of the
+        values.  These column names are bad enough without adding additional
+        confusion.
+     
+## R Issues
+
+* R is very inconsistent; the base code really needs to be more consistant.
+* I keep having problems with the data types.  I got all the way to the 
+        end before I realized that the data should have been read as numeric
+        instead of character.  It was a good thing that all the data in each
+        file was of the same type.
+* The R documentation should really indicate that merge doesn't guarantee
+        the order of the result.  Because these files were designed to 
+        positionally match contents, this could be a very bad if I didn't have
+        a class message board to point out the problems.
